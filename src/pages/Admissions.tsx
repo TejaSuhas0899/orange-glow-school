@@ -9,14 +9,39 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 
 const admissionSchema = z.object({
-  firstName: z.string().min(2, "First name must be at least 2 characters"),
-  lastName: z.string().min(2, "Last name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Phone number must be at least 10 digits"),
-  studentBirthday: z.string().min(1, "Birthday is required"),
-  gender: z.string().min(1, "Gender is required"),
-  classForAdmission: z.string().min(1, "Class is required"),
-  parentName: z.string().min(2, "Parent name is required"),
+  firstName: z
+    .string()
+    .min(2, "First name must be at least 2 characters")
+    .regex(/^[A-Za-z'\-]+$/, "First name must not contain spaces or numbers"),
+  lastName: z
+    .string()
+    .min(2, "Last name must be at least 2 characters")
+    .regex(/^[A-Za-z'\-]+$/, "Last name must not contain spaces or numbers"),
+  email: z
+    .string()
+    .email("Please enter a valid email address")
+    .regex(/^\S+$/, "Email must not contain spaces"),
+  phone: z
+    .string()
+    .min(1, "Phone number is required")
+    .refine((val) => {
+      const digits = val.replace(/\D/g, "");
+      return digits.length >= 10 && digits.length <= 15;
+    }, { message: "Phone must contain 10 to 15 digits (you can include spaces or punctuation)" }),
+  studentBirthday: z
+    .string()
+    .min(1, "Birthday is required")
+    .refine((val) => {
+      const d = new Date(val);
+      const now = new Date();
+      return !Number.isNaN(d.getTime()) && d <= now;
+    }, { message: "Please enter a valid birth date in the past" }),
+  gender: z.string().min(1, "Please select a gender"),
+  classForAdmission: z.string().min(1, "Please select a class for admission"),
+  parentName: z
+    .string()
+    .min(2, "Parent name must be at least 2 characters")
+    .regex(/^[A-Za-z\s'\-]+$/, "Parent name contains invalid characters"),
   address: z.string().min(10, "Address must be at least 10 characters"),
 });
 
@@ -32,8 +57,22 @@ const Admissions = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<AdmissionFormData>({
-    resolver: zodResolver(admissionSchema),
+      resolver: zodResolver(admissionSchema),
+      mode: "onChange",
+      reValidateMode: "onChange",
+      defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      studentBirthday: "",
+      gender: "",
+      classForAdmission: "",
+      parentName: "",
+      address: "",
+    },
   });
 
   const onSubmit = (data: AdmissionFormData) => {
@@ -64,11 +103,18 @@ const Admissions = () => {
                 <Label htmlFor="firstName">First Name *</Label>
                 <Input
                   id="firstName"
-                  {...register("firstName")}
+                  {...register("firstName", {
+                    onChange: (e) => {
+                      const v = (e.target as HTMLInputElement).value.replace(/\s/g, "");
+                      setValue("firstName", v, { shouldValidate: true, shouldDirty: true });
+                    },
+                  })}
                   placeholder="Enter first name"
+                  aria-invalid={!!errors.firstName}
+                  aria-describedby={errors.firstName ? "firstName-error" : undefined}
                 />
                 {errors.firstName && (
-                  <p className="text-sm text-destructive">{errors.firstName.message}</p>
+                  <p id="firstName-error" className="text-sm text-destructive">{errors.firstName.message}</p>
                 )}
               </div>
 
@@ -76,11 +122,18 @@ const Admissions = () => {
                 <Label htmlFor="lastName">Last Name *</Label>
                 <Input
                   id="lastName"
-                  {...register("lastName")}
+                  {...register("lastName", {
+                    onChange: (e) => {
+                      const v = (e.target as HTMLInputElement).value.replace(/\s/g, "");
+                      setValue("lastName", v, { shouldValidate: true, shouldDirty: true });
+                    },
+                  })}
                   placeholder="Enter last name"
+                  aria-invalid={!!errors.lastName}
+                  aria-describedby={errors.lastName ? "lastName-error" : undefined}
                 />
                 {errors.lastName && (
-                  <p className="text-sm text-destructive">{errors.lastName.message}</p>
+                  <p id="lastName-error" className="text-sm text-destructive">{errors.lastName.message}</p>
                 )}
               </div>
             </div>
@@ -91,11 +144,18 @@ const Admissions = () => {
                 <Input
                   id="email"
                   type="email"
-                  {...register("email")}
+                  {...register("email", {
+                    onChange: (e) => {
+                      const v = (e.target as HTMLInputElement).value.replace(/\s/g, "");
+                      setValue("email", v, { shouldValidate: true, shouldDirty: true });
+                    },
+                  })}
                   placeholder="your@email.com"
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? "email-error" : undefined}
                 />
                 {errors.email && (
-                  <p className="text-sm text-destructive">{errors.email.message}</p>
+                  <p id="email-error" className="text-sm text-destructive">{errors.email.message}</p>
                 )}
               </div>
 
@@ -105,9 +165,13 @@ const Admissions = () => {
                   id="phone"
                   {...register("phone")}
                   placeholder="(555) 123-4567"
+                  type="tel"
+                  inputMode="tel"
+                  aria-invalid={!!errors.phone}
+                  aria-describedby={errors.phone ? "phone-error" : undefined}
                 />
                 {errors.phone && (
-                  <p className="text-sm text-destructive">{errors.phone.message}</p>
+                  <p id="phone-error" className="text-sm text-destructive">{errors.phone.message}</p>
                 )}
               </div>
             </div>
@@ -119,18 +183,26 @@ const Admissions = () => {
                   id="studentBirthday"
                   type="date"
                   {...register("studentBirthday")}
+                  aria-invalid={!!errors.studentBirthday}
+                  aria-describedby={errors.studentBirthday ? "studentBirthday-error" : undefined}
                 />
                 {errors.studentBirthday && (
-                  <p className="text-sm text-destructive">{errors.studentBirthday.message}</p>
+                  <p id="studentBirthday-error" className="text-sm text-destructive">{errors.studentBirthday.message}</p>
                 )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="gender">Gender *</Label>
-                <Select value={selectedGender} onValueChange={(value) => {
-                  setSelectedGender(value);
-                  register("gender").onChange({ target: { value } });
-                }}>
+                <Select
+                  value={selectedGender}
+                  onValueChange={(value) => {
+                    setSelectedGender(value);
+                    // update react-hook-form value and validate
+                    setValue("gender", value, { shouldValidate: true, shouldDirty: true });
+                  }}
+                  aria-invalid={!!errors.gender}
+                  aria-describedby={errors.gender ? "gender-error" : undefined}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select gender" />
                   </SelectTrigger>
@@ -141,17 +213,23 @@ const Admissions = () => {
                   </SelectContent>
                 </Select>
                 {errors.gender && (
-                  <p className="text-sm text-destructive">{errors.gender.message}</p>
+                  <p id="gender-error" className="text-sm text-destructive">{errors.gender.message}</p>
                 )}
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="classForAdmission">Class for Admission *</Label>
-              <Select value={selectedClass} onValueChange={(value) => {
-                setSelectedClass(value);
-                register("classForAdmission").onChange({ target: { value } });
-              }}>
+              <Select
+                value={selectedClass}
+                onValueChange={(value) => {
+                  setSelectedClass(value);
+                  // update react-hook-form value and validate
+                  setValue("classForAdmission", value, { shouldValidate: true, shouldDirty: true });
+                }}
+                aria-invalid={!!errors.classForAdmission}
+                aria-describedby={errors.classForAdmission ? "classForAdmission-error" : undefined}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select class" />
                 </SelectTrigger>
@@ -172,7 +250,7 @@ const Admissions = () => {
                 </SelectContent>
               </Select>
               {errors.classForAdmission && (
-                <p className="text-sm text-destructive">{errors.classForAdmission.message}</p>
+                <p id="classForAdmission-error" className="text-sm text-destructive">{errors.classForAdmission.message}</p>
               )}
             </div>
 
@@ -182,9 +260,11 @@ const Admissions = () => {
                 id="parentName"
                 {...register("parentName")}
                 placeholder="Enter parent name"
+                aria-invalid={!!errors.parentName}
+                aria-describedby={errors.parentName ? "parentName-error" : undefined}
               />
               {errors.parentName && (
-                <p className="text-sm text-destructive">{errors.parentName.message}</p>
+                <p id="parentName-error" className="text-sm text-destructive">{errors.parentName.message}</p>
               )}
             </div>
 
@@ -194,9 +274,11 @@ const Admissions = () => {
                 id="address"
                 {...register("address")}
                 placeholder="Enter complete address"
+                aria-invalid={!!errors.address}
+                aria-describedby={errors.address ? "address-error" : undefined}
               />
               {errors.address && (
-                <p className="text-sm text-destructive">{errors.address.message}</p>
+                <p id="address-error" className="text-sm text-destructive">{errors.address.message}</p>
               )}
             </div>
 

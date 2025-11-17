@@ -5,12 +5,12 @@ const About = () => {
     <div className="min-h-screen py-12 md:py-20">
       <div className="container mx-auto px-4 max-w-4xl">
         <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 text-center">
-          About Bright Future School
+          About Endeavour
         </h1>
         
         <div className="prose prose-lg max-w-none">
           <p className="text-muted-foreground text-lg leading-relaxed mb-8 text-center">
-            Established in 1995, Bright Future School has been a beacon of quality education 
+            Established in 1995, Endeavour has been a beacon of quality education 
             for over 25 years, shaping the lives of thousands of students.
           </p>
 
@@ -57,7 +57,7 @@ const About = () => {
               dedication to academic excellence, and an unwavering commitment to student welfare.
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              Today, Bright Future School stands proud with state-of-the-art facilities, a team of 
+              Today, Endeavour stands proud with state-of-the-art facilities, a team of 
               highly qualified educators, and a track record of outstanding academic and co-curricular 
               achievements. Our alumni have gone on to excel in various fields, making significant 
               contributions to society.

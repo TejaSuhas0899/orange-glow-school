@@ -33,7 +33,7 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 animate-fade-in">
-              Welcome to Bright Future School
+              Welcome to Endeavour
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
               Empowering young minds to achieve excellence through innovative learning, 
@@ -55,12 +55,80 @@ const Home = () => {
         </div>
       </section>
 
+      {/* School Classroom Section */}
+      <section className="py-16 md:py-24 bg-background">
+        <div className="container mx-auto px-4">
+          
+          {/* Section Heading */}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              A Glimpse Into Our Classrooms
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              At Endeavour, learning is joyful, interactive, and built on strong teacher–student relationships.
+              Our classrooms are designed to inspire curiosity, creativity, and confidence.
+            </p>
+          </div>
+
+          {/* Grid Layout */}
+          <div className="grid md:grid-cols-2 gap-10">
+
+            {/* Image 1 */}
+            <div className="rounded-xl overflow-hidden shadow-lg">
+              <img
+                src="/school-pic1.webp"
+                className="w-full h-64 md:h-96 object-cover"
+                alt="Students raising hands during class"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
+            {/* Content 1 */}
+            <div className="flex flex-col justify-center space-y-4">
+              <h3 className="text-2xl font-semibold text-foreground">
+                Active & Engaged Learning
+              </h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Students are encouraged to think, explore, and express themselves freely. 
+                Our interactive classroom environment ensures every child participates 
+                and learns with enthusiasm.
+              </p>
+            </div>
+
+            {/* Content 2 */}
+            <div className="flex flex-col justify-center space-y-4">
+              <h3 className="text-2xl font-semibold text-foreground">
+                Supportive Teacher–Student Bond
+              </h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Our teachers celebrate effort, appreciate progress, and motivate students
+                with warmth and care. We believe growth happens best in an environment 
+                filled with encouragement and trust.
+              </p>
+            </div>
+
+            {/* Image 2 */}
+            <div className="rounded-xl overflow-hidden shadow-lg">
+              <img
+                src="/school-pic2.jpg"
+                className="w-full h-64 md:h-96 object-cover"
+                alt="Teacher encouraging student with a high-five"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       {/* Why Choose Us Section */}
       <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Why Choose Bright Future School?
+              Why Choose Endeavour?
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               We provide an exceptional learning environment where every child can thrive and reach their full potential.

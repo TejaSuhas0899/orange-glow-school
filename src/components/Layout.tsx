@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Facebook, Instagram, GraduationCap } from "lucide-react";
+import { Facebook, Instagram } from "lucide-react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
@@ -18,10 +18,28 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <header className="bg-background border-b border-border sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="bg-primary rounded-full p-2 group-hover:scale-110 transition-transform">
-              <GraduationCap className="w-6 h-6 text-primary-foreground" />
+            {/* Logo: place your image at /public/Logo.png (served as /Logo.png). */}
+            <div className="rounded-full overflow-hidden w-10 h-10 flex items-center justify-center bg-primary/10 group-hover:scale-105 transition-transform">
+              <img
+                src="/Logo.png"
+                alt="Endeavour logo"
+                className="w-10 h-10 object-cover block"
+                onError={(e) => {
+                  // If Logo.png fails, try favicon.ico as fallback
+                  const img = e.currentTarget as HTMLImageElement;
+                  if (!img.dataset.fallback) {
+                    img.dataset.fallback = "1";
+                    img.src = "/favicon.ico?v=2";
+                    img.style.display = "block";
+                  } else {
+                    // final fallback: hide image (keeps the rounded bg)
+                    img.style.display = "none";
+                  }
+                }}
+              />
+              <div className="sr-only">Endeavour</div>
             </div>
-            <span className="text-xl font-bold text-foreground">Bright Future School</span>
+            <span className="text-xl font-bold text-foreground">Endeavour</span>
           </Link>
           
           <nav className="hidden md:flex gap-6">
@@ -104,9 +122,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </div>
           </div>
           
-          <div className="mt-8 pt-6 border-t border-border text-center">
+            <div className="mt-8 pt-6 border-t border-border text-center">
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Bright Future School. All rights reserved.
+              © {new Date().getFullYear()} Endeavour. All rights reserved.
             </p>
           </div>
         </div>
